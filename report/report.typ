@@ -109,3 +109,13 @@ The following sections detail the data collection and preprocessing steps
 and describe the application of BERTopic,
 before evaluating and presenting the results
 and discussing their implications.
+
+= Data Collection and Preprocessing
+
+= Topic Modeling
+
+= Evaluation
+
+= Results
+
+= Discussion and Future Work
