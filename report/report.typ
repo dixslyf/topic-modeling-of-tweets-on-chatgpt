@@ -97,7 +97,7 @@ various sectors, including business, education and creative industries.
 Understanding the public discourse surrounding ChatGPT
 is a key step for grasping the implications of widely accessible artifical intelligence.
 
-This report applies BERTopic, a topic modeling technique,
+This report applies BERTopic @grootendorst2022bertopic, a topic modeling technique,
 to analyze tweets from X~(formerly Twitter) about ChatGPT.
 The objective is to identify the main topics discussed in tweets mentioning ChatGPT
 in hopes of gaining insights into user perceptions and issues
@@ -106,7 +106,7 @@ Such insights can inform stakeholders about the technology's reception
 and guide future developments and policies surrounding artficial intelligence.
 
 The following sections detail the data collection and preprocessing steps
-and describe the application of BERTopic,
+and describe the structure and application of BERTopic,
 before evaluating and presenting the results
 and discussing their implications.
 
