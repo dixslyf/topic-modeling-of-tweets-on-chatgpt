@@ -1,4 +1,4 @@
-#let TEXT_FONT = "Linux Libertine"
+#let TEXT_FONT = "FreeSerif"
 #let MONOSPACE_FONT = "DejaVu Sans Mono"
 #let TEXT_SIZE = 12pt
 #let TITLE_SIZE = TEXT_SIZE * 1.4
