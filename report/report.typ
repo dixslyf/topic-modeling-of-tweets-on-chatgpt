@@ -164,3 +164,5 @@ determining the topics.
 = Results
 
 = Discussion and Future Work
+
+#bibliography("references.bib")
