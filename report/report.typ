@@ -156,7 +156,7 @@ requires keeping the original structure of the text
 to understand context.
 // TODO: cite https://maartengr.github.io/BERTopic/faq.html#should-i-preprocess-the-data
 
-= Topic Modeling
+= Topic Model
 
 A BERTopic model was fit to the dataset using the #link("https://maartengr.github.io/BERTopic/index.html")[BERTopic Python library].
 // TODO: cite BERTopic
