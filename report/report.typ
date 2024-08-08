@@ -121,10 +121,10 @@ The metadata include the tweet's timestamp, user, hyperlinks, retweet count and 
 // TODO: redirect to appendix for full list of columns
 This dataset was chosen due to its high usability score of 10 (calculated by Kaggle)
 and relative small but sufficient size,
-which is important to reduce topic modeling time
+to reduce topic modeling time
 to meet this #text(hyphenate: false)[project]'s time constraints.
 Furthermore, the dataset does not contain duplicate samples or missing values,
-reducing the effort needed for cleaning the data.
+reducing the effort needed for data cleaning.
 // TODO: cite dataset
 // https://www.kaggle.com/datasets/tariqsays/chatgpt-twitter-dataset
 
@@ -144,22 +144,76 @@ emojis,
 hash symbols,
 user mentions
 and hyperlinks
-as those are considered noise
+as those introduce noise
 (the pretrained model BERTopic uses for generating document embeddings
 was not trained on such data)
 and could reduce the coherence of the resulting topics.
 
 No further preprocessing (e.g., removal of stop words, lemmatization, etc.) was performed
+on the dataset
 as BERTopic's use of document embeddings and a transformer-based model
 requires keeping the original structure of the text
 to understand context.
 // TODO: cite https://maartengr.github.io/BERTopic/faq.html#should-i-preprocess-the-data
-However, stop words were removed from the topic representations _after_
-determining the topics.
 
 = Topic Modeling
 
-= Evaluation
+A BERTopic model was fit to the dataset using the #link("https://maartengr.github.io/BERTopic/index.html")[BERTopic Python library].
+// TODO: cite BERTopic
+BERTopic @grootendorst2022bertopic processes documents using a pipeline of submodels.
+First, it uses a Bidirectional Encoder Representations from Transformers~(BERT) model to generate document embeddings.
+These embeddings are then passed to a dimensionality reduction algorithm,
+followed by a clustering algorithm to group documents.
+By default, BERTopic uses Uniform Manifold Approximation and Projection~(UMAP) for dimensionality reduction
+and Hierarchical Density-Based Spatial Clustering of Applications with Noise~(HDBSCAN) for clustering.
+Next, BERTopic generates a cluster-level bag-of-words model and
+calculates a term frequency–inverse document frequency~(TF-IDF) score.
+However, each cluster is treated as a single document when calculating TF-IDF;
+hence, the author of BERTopic refers to the score as class-based TF-IDF~(c-TF-IDF).
+Each cluster/topic is represented by the words with the highest c-TF-IDF scores.
+
+To build the model,
+first, the document embeddings were precomputed
+using the pretrained `all-MiniLM-L6-v2` model from the
+#link("https://www.sbert.net/")[#text(hyphenate: false)[SentenceTransformers]~(SBERT)] package @reimers-2019-sentence-bert.
+`all-MiniLM-L6-v2` was chosen out of the pretrained models
+#footnote[A list of pretrained models is available #link("https://sbert.net/docs/sentence_transformer/pretrained_models.htmL")[here].]
+as it strikes a good balance between quality and speed.
+UMAP and HDBSCAN were used for the dimensionality reduction and clustering respectively
+since they are recommended by the BERTopic documentation.
+However, GPU-accelerated implementations of the algorithms were used
+via the #link("https://docs.rapids.ai/api/cuml/stable/")[cuML library] @raschka2020machine
+instead of the default CPU implementations
+to speed up the process.
+These submodels were then used to initialise the BERTopic model.
+
+Stopwords were removed from the topic representations _after_
+determining the topics
+using a list provided by the #link("https://www.nltk.org/")[Natural Language Toolkit~(NLTK)] @Bird_Natural_Language_Processing_2009.
+Additionally, part-of-speech tagging (provided by spaCy @Honnibal_spaCy_Industrial-strength_Natural_2020) was applied to retain only adjectives and nouns,
+followed by maximal marginal relevance~(MMR) to improve the diversity of the words representing each topic.
+These steps were specified to the BERTopic model during initialisation.
+
+Several hyperparameters were tuned using a grid search:
+(a) number of neighbours for UMAP,
+(b) number of resulting components for UMAP,
+(c) minimum cluster size for HDBSCAN, and
+(d) number of topics to reduce to for BERTopic.
+These hyperparameters have the most impact on the resulting topics
+in terms of coherence and size.
+Each hyperparameter set was evaluated using
+a mixture of objective evaluation,
+using the $C_v$ topic coherence score from @roder_exploring_2015;
+and subjective evaluation,
+through human judgement of the topic representations.
+Ultimately, the goal of topic modeling is to produce topics
+meaningful and interpretable to _humans_.
+While a high $C_v$ indicates good statistical coherence,
+a mathematically-coherent topic might still be vague to a human,
+hence the use of both objective and subjective evaluation.
+Results are in @section-evaluation.
+
+= Evaluation <section-evaluation>
 
 = Results
 
