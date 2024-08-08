@@ -56,8 +56,10 @@
 
 #show figure: set block(breakable: true)
 
-#show table.cell.where(y: 0): set text(weight: "bold")
+#show table.cell.where(y: 0): set text(style: "italic")
+#show table.cell.where(y: 0): set par(justify: false)
 #set table(
+  align: (x, y) => if y == 0 { center + horizon } else { center + top },
   stroke: (x, y) => (
     top: if y <= 1 { 0.8pt } else { 0pt },
     bottom: 1pt,
@@ -198,7 +200,7 @@ Several hyperparameters were tuned using a grid search:
 (a) number of neighbours for UMAP,
 (b) number of resulting components for UMAP,
 (c) minimum cluster size for HDBSCAN, and
-(d) number of topics to reduce to for BERTopic.
+(d) target number of topics to reduce to for BERTopic.
 These hyperparameters have the most impact on the resulting topics
 in terms of coherence and size.
 Each hyperparameter set was evaluated using
@@ -214,6 +216,296 @@ hence the use of both objective and subjective evaluation.
 Results are in @section-evaluation.
 
 = Evaluation <section-evaluation>
+
+The $C_v$ score for each set of hyperparameters is shown in @table-cv.
+$C_v$ scores range from 0, indicating low coherence, to 1, indicating high coherence.
+The scores in @table-cv are decent, with 0.592 as the lowest
+ and 0.716 as the highest.
+
+The topics for the top three hyperparameter sets were then judged
+by manually inspecting the topic representations,
+a snippet of which is shown in @table-topics.
+In this case, the set with the highest $C_v$ score appears to be most coherent.
+For example, it is difficult to gauge what the top topic for the second set represents, as is the case for the third set.
+Similar difficulties exist for other topics not shown in @table-topics (refer to the accompanying Jupyter notebook).
+Nonetheless, it is crucial to keep in mind that this evaluation is subjective.
+
+#figure(
+  caption: [$C_V$ scores for hyperparameter sets],
+  {
+    set text(size: 11pt)
+    table(
+      columns: (auto, auto, auto, auto, 15%),
+      table.header(
+        [No. of neighbours (UMAP)],
+        [No. of components (UMAP)],
+        [Minimum cluster size (HDBSCAN)],
+        [Target no. of topics (BERTopic)],
+        [$C_v$],
+      ),
+
+      [15],
+      [10],
+      [10],
+      [40],
+      [0.716],
+
+      [30],
+      [5],
+      [10],
+      [30],
+      [0.697],
+
+      [15],
+      [10],
+      [10],
+      [50],
+      [0.693],
+
+      [15],
+      [10],
+      [10],
+      [30],
+      [0.692],
+
+      [30],
+      [10],
+      [10],
+      [40],
+      [0.683],
+
+      [30],
+      [5],
+      [10],
+      [50],
+      [0.682],
+
+      [30],
+      [5],
+      [10],
+      [40],
+      [0.680],
+
+      [30],
+      [10],
+      [20],
+      [50],
+      [0.679],
+
+      [30],
+      [10],
+      [10],
+      [30],
+      [0.677],
+
+      [30],
+      [5],
+      [20],
+      [40],
+      [0.676],
+
+      [15],
+      [10],
+      [20],
+      [30],
+      [0.676],
+
+      [15],
+      [5],
+      [10],
+      [50],
+      [0.675],
+
+      [15],
+      [5],
+      [10],
+      [30],
+      [0.673],
+
+      [30],
+      [10],
+      [10],
+      [50],
+      [0.673],
+
+      [30],
+      [5],
+      [20],
+      [50],
+      [0.670],
+
+      [15],
+      [5],
+      [10],
+      [40],
+      [0.662],
+
+      [30],
+      [10],
+      [20],
+      [30],
+      [0.657],
+
+      [15],
+      [10],
+      [20],
+      [50],
+      [0.656],
+
+      [30],
+      [5],
+      [20],
+      [30],
+      [0.652],
+
+      [15],
+      [10],
+      [20],
+      [40],
+      [0.646],
+
+      [15],
+      [5],
+      [20],
+      [40],
+      [0.646],
+
+      [15],
+      [5],
+      [20],
+      [50],
+      [0.644],
+
+      [30],
+      [10],
+      [20],
+      [40],
+      [0.640],
+
+      [15],
+      [5],
+      [20],
+      [30],
+      [0.635],
+
+      [30],
+      [10],
+      [20],
+      [None],
+      [0.617],
+
+      [30],
+      [5],
+      [20],
+      [None],
+      [0.615],
+
+      [30],
+      [5],
+      [10],
+      [None],
+      [0.612],
+
+      [15],
+      [5],
+      [20],
+      [None],
+      [0.611],
+
+      [15],
+      [5],
+      [10],
+      [None],
+      [0.609],
+
+      [15],
+      [10],
+      [20],
+      [None],
+      [0.608],
+
+      [15],
+      [10],
+      [10],
+      [None],
+      [0.605],
+
+      [30],
+      [10],
+      [10],
+      [None],
+      [0.592],
+    )
+  }
+) <table-cv>
+
+#figure(
+  caption: [Topic representations for the 5 most frequent topics of the top 3 hyperparameter sets],
+  table(
+    columns: 3,
+    table.header[Hyperparameter Set\ $C_v$ Ranking][Topic Count][Representation],
+
+    [1],
+    [6755],
+    [google, search, seo, page, tweet, code, prompt],
+
+    [],
+    [2349],
+    [malware, cybersecurity, chatbot, artificialintelligence],
+
+    [],
+    [1898],
+    [openai, investment, maker, partnership, dollars],
+
+    [],
+    [1736],
+    [exam, mba, education, students, professor],
+
+    [],
+    [193],
+    [estate, legal, enterprise, lawyers, killer],
+
+    [2],
+    [5998],
+    [search, tweet, free, month, plagiarism, twitter],
+
+    [],
+    [2038],
+    [ai, cybersecurity, experts, malware, tools],
+
+    [],
+    [1473],
+    [openai, maker, dollar, investment, partnership],
+
+    [],
+    [1243],
+    [exam, mba, medical, professor, licensing, education],
+
+    [],
+    [135],
+    [nfts, chipmaker, hype, estimates, big, sales],
+
+    [3],
+    [5854],
+    [tweet, capacity, woke, tweets, month, white],
+
+    [],
+    [1768],
+    [investment, dollar, billions, openai, multibillion],
+
+    [],
+    [1625],
+    [exam, mba, professor, exams, medical, education],
+
+    [],
+    [1522],
+    [generative, robot, tools, artificialintelligence],
+
+    [],
+    [1243],
+    [google, search, founders, seo, engine, page],
+)
+) <table-topics>
 
 = Results
 
