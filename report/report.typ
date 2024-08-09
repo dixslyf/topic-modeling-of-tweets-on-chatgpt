@@ -76,7 +76,7 @@
 )
 
 #align(center, [
-  #text(size: TITLE_SIZE)[*ICT202 Assignment 2: Topic Modeling*] \
+  #text(size: TITLE_SIZE)[*ICT202 Assignment 2: Topic Modelling*] \
   \
   #text(size: SUBTITLE_SIZE)[
     Dixon Sean Low Yan Feng \
@@ -89,152 +89,122 @@
 
 = Introduction
 
-ChatGPT is a powerful language model developed by OpenAI
-that has generated significant attention worldwide
-and considerable discussion on social media platforms.
-As its adoption grows,
-many views have emerged about how ChatGPT~(and artificial intelligence, in general)
-may impact
-various sectors, including business, education and creative industries.
+ChatGPT, developed by OpenAI, has garnered significant global attention and discussion on social media.
+As its adoption increases,
+views have emerged about how it and other artificial intelligence~(AI) tools
+may impact sectors like business, education and creative industries.
 Understanding the public discourse surrounding ChatGPT
-is a key step for grasping the implications of widely accessible artifical intelligence.
+is crucial for assessing the implications of widely accessible artifical intelligence.
 
-This report applies BERTopic @grootendorst2022bertopic, a topic modeling technique,
-to analyze tweets from X~(formerly Twitter) about ChatGPT.
-The objective is to identify the main topics discussed in tweets mentioning ChatGPT
-in hopes of gaining insights into user perceptions and issues
-regarding the increasingly wide accessibility of artificial intelligence.
-Such insights can inform stakeholders about the technology's reception
-and guide future developments and policies surrounding artficial intelligence.
+This report uses BERTopic @grootendorst2022bertopic
+to perform topic modelling on
+tweets from X~(formerly Twitter) about ChatGPT.
+The objective is to identify the key topics underlying discussions
+and gain insights into user perceptions and issues
+regarding the increasingly wide accessibility of AI.
+These insights can inform stakeholders about the technology's reception
+and guide future developments and policies surrounding AI.
 
 The following sections detail the data collection and preprocessing steps
-and describe the structure and application of BERTopic,
+and describe the structure and application of BERTopic
 before evaluating and presenting the results
 and discussing their implications.
 
 = Data Collection and Preprocessing
 
-The dataset was retrieved from Kaggle and
-contains metadata and the textual content of
-50,002 tweets posted with the hashtag `#chatgpt`.
-The tweets span a time period from 2023-01-22 to 2023-01-24.
-The dataset is multilingual, with tweets of varying languages.
-The metadata include the tweet's timestamp, user, hyperlinks, retweet count and like count, among others.
-// TODO: redirect to appendix for full list of columns
-This dataset was chosen due to its high usability score of 10 (calculated by Kaggle)
-and relative small but sufficient size,
-to reduce topic modeling time
-to meet this #text(hyphenate: false)[project]'s time constraints.
-Furthermore, the dataset does not contain duplicate samples or missing values,
+The #link("https://www.kaggle.com/datasets/tariqsays/chatgpt-twitter-dataset")[dataset]
+was sourced from Kaggle and
+contains metadata (e.g., timestamps, user information and like counts)
+and textual content from 
+50,002 tweets with the `#chatgpt` hashtag.
+It spans from 2023-01-22 to 2023-01-24
+and is multilingual.
+This dataset was chosen for its high usability score of 10 (calculated by Kaggle)
+and manageable size.
+Furthermore, it is free of duplicate and missing values,
 reducing the effort needed for data cleaning.
 // TODO: cite dataset
 // https://www.kaggle.com/datasets/tariqsays/chatgpt-twitter-dataset
 
-As multilingual topic modeling is complex,
-the task was simplified to consider only tweets in English.
-Hence, the dataset was filtered to remove tweets in other languages.
-As each sample is already prelabeled with its language,
-filtering the dataset only required examining the language label
-and removing tweets whose language was not English.
-32,076 samples remained after filtering.
-
-All columns except the textual content column
+As multilingual topic modelling is complex,
+only English tweets were retained.
+Each sample was already prelabeled with its language,
+so filtering only required examining the language column,
+leaving 32,076 samples.
+Next, all columns except the textual content
 were removed
-since they are metadata and unneeded for building the BERTopic model.
-The textual content was then preprocessed to remove
+since they are metadata and unneeded for topic modelling.
+
+The textual content was preprocessed to remove
 emojis,
 hash symbols,
 user mentions
 and hyperlinks
-as those introduce noise
-(the pretrained model BERTopic uses for generating document embeddings
-was not trained on such data)
-and could reduce the coherence of the resulting topics.
-
-No further preprocessing (e.g., removal of stop words, lemmatization, etc.) was performed
-on the dataset
+to reduce noise
+(the pre-trained model BERTopic uses for document embeddings
+was not trained on such data).
+No further preprocessing (e.g., removal of stop words, lemmatisation) was performed
 as BERTopic's use of document embeddings and a transformer-based model
-requires keeping the original structure of the text
-to understand context.
+requires keeping the original structure of the text.
 // TODO: cite https://maartengr.github.io/BERTopic/faq.html#should-i-preprocess-the-data
 
 = Topic Model
 
-A BERTopic model was fit to the dataset using the #link("https://maartengr.github.io/BERTopic/index.html")[BERTopic Python library].
+A BERTopic model was fit to the dataset using the #link("https://maartengr.github.io/BERTopic/index.html")[BERTopic library].
 // TODO: cite BERTopic
-BERTopic @grootendorst2022bertopic processes documents using a pipeline of submodels.
+BERTopic @grootendorst2022bertopic processes documents through a pipeline of submodels.
 First, it uses a Bidirectional Encoder Representations from Transformers~(BERT) model to generate document embeddings.
-These embeddings are then passed to a dimensionality reduction algorithm,
-followed by a clustering algorithm to group documents.
+These embeddings are then subjected to dimensionality reduction and clustering algorithms.
 By default, BERTopic uses Uniform Manifold Approximation and Projection~(UMAP) for dimensionality reduction
 and Hierarchical Density-Based Spatial Clustering of Applications with Noise~(HDBSCAN) for clustering.
-Next, BERTopic generates a cluster-level bag-of-words model and
+Following clustering, BERTopic constructs a cluster-level bag-of-words model and
 calculates a term frequency–inverse document frequency~(TF-IDF) score.
-However, each cluster is treated as a single document when calculating TF-IDF;
-hence, the author of BERTopic refers to the score as class-based TF-IDF~(c-TF-IDF).
-Each cluster/topic is represented by the words with the highest c-TF-IDF scores.
+However, each cluster is treated as a single document when calculating TF-IDF,
+leading to what is termed class-based TF-IDF~(c-TF-IDF).
+The terms with the highest c-TF-IDF scores represent each topic.
 
 To build the model,
-first, the document embeddings were precomputed
-using the pretrained `all-MiniLM-L6-v2` model from the
+document embeddings were first precomputed
+using the `all-MiniLM-L6-v2` model from the
 #link("https://www.sbert.net/")[#text(hyphenate: false)[SentenceTransformers]~(SBERT)] package @reimers-2019-sentence-bert.
-`all-MiniLM-L6-v2` was chosen out of the pretrained models
-#footnote[A list of pretrained models is available #link("https://sbert.net/docs/sentence_transformer/pretrained_models.htmL")[here].]
-as it strikes a good balance between quality and speed.
-UMAP and HDBSCAN were used for the dimensionality reduction and clustering respectively
-since they are recommended by the BERTopic documentation.
-However, GPU-accelerated implementations of the algorithms were used
+Although #link("https://sbert.net/docs/sentence_transformer/pretrained_models.htmL")[other models] are available,
+`all-MiniLM-L6-v2` strikes a balance between quality and speed.
+UMAP and HDBSCAN were used for the dimensionality reduction and clustering, respectively,
+as recommended by the BERTopic documentation.
+GPU-accelerated implementations of these algorithms were used
 via the #link("https://docs.rapids.ai/api/cuml/stable/")[cuML library] @raschka2020machine
-instead of the default CPU implementations
-to speed up the process.
-These submodels were then used to initialise the BERTopic model.
-
-Stopwords were removed from the topic representations _after_
-determining the topics
+to improve processing speed.
+Stopwords were removed from the topic representations
 using a list provided by the #link("https://www.nltk.org/")[Natural Language Toolkit~(NLTK)] @Bird_Natural_Language_Processing_2009.
-Additionally, part-of-speech tagging (provided by spaCy @Honnibal_spaCy_Industrial-strength_Natural_2020) was applied to retain only adjectives and nouns,
-followed by maximal marginal relevance~(MMR) to improve the diversity of the words representing each topic.
-These steps were specified to the BERTopic model during initialisation.
+Then, part-of-speech tagging (provided by spaCy @Honnibal_spaCy_Industrial-strength_Natural_2020) was applied to retain only adjectives and nouns,
+followed by maximal marginal relevance~(MMR) to improve the diversity of the representative words.
+These submodels and steps were specified to the BERTopic model during initialisation.
 
-Several hyperparameters were tuned using a grid search:
+Hyperparameters were optimised using a grid search:
 (a) number of neighbours for UMAP,
 (b) number of resulting components for UMAP, and
 (c) minimum cluster size for HDBSCAN.
-Since it is difficult to "guess" the number of topics,
-these hyperparameters were specifically chosen
-as they have the most impact on the resulting topics
-in terms of coherence and size.
-Each hyperparameter set was evaluated using
-a mixture of objective evaluation,
-using the $C_v$ topic coherence score from @roder_exploring_2015;
-and subjective evaluation,
-through human judgement of the topic representations.
-Ultimately, the goal of topic modeling is to produce topics
-meaningful and interpretable to _humans_.
-While a high $C_v$ indicates good statistical coherence,
-a mathematically-coherent topic might still be vague to a human,
-hence the use of both objective and subjective evaluation.
-Results are in @section-evaluation.
+These parameters were selected for their significant impact on topic coherence and size
+as determining the number of topics in advance is challenging. 
+Each hyperparameter configuration was evaluated through
+both objective evaluation (using the $C_v$ topic coherence score from @roder_exploring_2015)
+and subjective human judgement of the topic representations.
+This dual approach ensures that while high $C_v$ scores indicate statistical coherence,
+the final topics are also meaningful and interpretable to humans.
+The results of this analysis are in @section-evaluation.
 
 = Evaluation <section-evaluation>
 
-The $C_v$ score for each set of hyperparameters is shown in @table-cv.
-$C_v$ scores range from 0, indicating low coherence, to 1, indicating high coherence.
-The scores in @table-cv are acceptable, with 0.596 as the lowest
- and 0.626 as the highest.
-
-The topics for the top three hyperparameter sets were then judged
-by having a human manually inspect the topic representations,
-a snippet of which is shown in @table-topics.
-All three sets yield similar topics and coherence,
-and, interestingly, it is not obvious what the second topic for each set represents
-based on the representative words.
-There will likely not be a significant difference between each set,
-but, since we must still choose a set, further analysis will be conducted on the set with the highest $C_v$ score.
-Still, it is crucial to keep in mind that this evaluation is subjective.
+@table-cv shows the $C_v$ scores for each set of hyperparameters tested.
+$C_v$ scores range from 0 (low coherence) to 1 (high coherence)
+and reflect the coherence of the generated topics.
+The scores indicate satisfactory topic coherence,
+with 0.596 as the lowest and 0.626 as the highest.
+These values suggest that the topics are reasonably coherent across different hyperparameter settings.
 
 #figure(
   caption: [$C_V$ scores for hyperparameter sets],
+  placement: auto,
   {
     set text(size: 11pt)
     table(
@@ -310,6 +280,20 @@ Still, it is crucial to keep in mind that this evaluation is subjective.
   }
 ) <table-cv>
 
+@table-topics provides a snippet of the topic representations for the top three hyperparameter sets.
+These representations were evaluated through human inspection.
+The topics derived from these sets are similar in both coherence and content.
+However, it is not obvious what the second topic for each set represents
+based on the representative terms alone,
+indicating a potential area for further analysis.
+
+Despite the similarity in results,
+it is necessary to select a single hyperparameter set for final use.
+Given that the differences between sets are minimal,
+the set with the highest $C_v$ score will be used for subsequent analysis. 
+It is important to note that while the $C_v$ score provides a quantitative measure of coherence,
+the final evaluation remains somewhat subjective.
+
 #figure(
   caption: [Topic representations for the 4 most frequent topics of the BERTopic models for the top 3 hyperparameter sets],
   table(
@@ -368,62 +352,66 @@ Still, it is crucial to keep in mind that this evaluation is subjective.
 
 = Results
 
-There is a total of 74 topics from the BERTopic model.
-The topics are visualised in a two-dimensional space using an intertopic distance map~(#text(hyphenate: false)[@fig-intertopic-dist]).
-Each bubble corresponds to a topic, and the radius represents the topic's prevalence.
-Similar topics will be closer to each other.
-At a glance, it is clear many topics overlap, indicating similarity.
-This can be explained by the use of HDBSCAN, which leads to hierarchical topics.
-Indeed, a topic similarity matrix (@fig-similarity-matrix) shows high similarity between many topics.
-Additionally, @fig-intertopic-dist shows there are roughly 10 main clusters of topics.
-Although out of scope for this report, in future, it may be worthwhile to explore the reduction of the number of topics to 10.
+The BERTopic model identified a total of 74 topics,
+which are visualised in a two-dimensional intertopic distance map~(#text(hyphenate: false)[@fig-intertopic-dist]).
+Each bubble in the map represents a topic, with its size indicating the topic’s prevalence.
+Topics located closer together are more similar to each other.
+It is clear that many topics overlap,
+a result of the hierarchical clustering performed by HDBSCAN.
+This hierarchical clustering is also evident from the high similarity between many topics,
+as shown in the topic similarity matrix (@fig-similarity-matrix).
+Additionally, @fig-intertopic-dist illustrates approximately ten primary clusters of topics.
+Although a reduction to ten topics could be beneficial for further analysis,
+this approach is beyond the current report’s scope.
 
-#figure(
-  caption: [Intertopic distance map],
-  rect(image("graphics/intertopic-distance.png", width: 60%)),
-) <fig-intertopic-dist>
+#grid(
+  columns: 2,
+  align: center + bottom,
+  [#figure(
+    caption: [Intertopic distance map],
+    rect(image("graphics/intertopic-distance.png", width: 85%)),
+  ) <fig-intertopic-dist>],
+  [#figure(
+    caption: [Topic similarity matrix],
+    image("graphics/similarity-matrix.png", width: 90%),
+  ) <fig-similarity-matrix>],
+)
 
-#figure(
-  caption: [Topic similarity matrix],
-  image("graphics/similarity-matrix.png", width: 80%),
-) <fig-similarity-matrix>
-
-@fig-topic-word-scores shows the terms with the highest c-TF-IDF scores for the 10 most frequent topics.
-@fig-wordclouds conveys information similar to @fig-topic-word-scores by representing the
-terms as a word cloud, where larger words have higher c-TF-IDF scores.
+@fig-topic-word-scores shows the terms with the highest c-TF-IDF scores for the ten most frequent topics,
+while @fig-wordclouds provides a wordcloud representation of these terms,
+with larger words indicating higher scores.
 The topics are ordered by their prevalence (i.e., Topic 0 is the most common).
-
-Topic 0 appears to be about artificial intelligence~(AI).
-In a sense, the topic of AI is expected to be the most common since ChatGPT is an AI tool.
-Unfortunately, this is uninsightful.
-Topic 1 has rather disjointed terms — 
-the presence of "gpt3", "essay", and "teacher" suggest education, while "programming" adds a tech angle.
-The inclusion of the Telugu language could represent regional discussions or multilingual features.
+Topic 0, unsurprisingly, focuses on AI, reflecting the nature of ChatGPT.
+However, this topic's insights are somewhat superficial due to its generality.
+Topic 1 has somewhat disjointed terms — 
+"essay" and "teacher" suggest an educational context,
+but "programming" introduces a technological aspect
+and "telugu" hints at regional or multilingual discussions.
+It is not clear what the topic represents.
 
 #figure(
   caption: [Topic word scores for the 10 most frequent topics],
-  image("graphics/topic-word-scores.png"),
+  image("graphics/topic-word-scores.png", width: 90%),
+  placement: auto,
 ) <fig-topic-word-scores>
 
-Topic 2, on the other hand, is seemingly about search engine optimisation~(SEO)
-and suggests that users are exploring how AI tools like ChatGPT can be leveraged in the digital marketing space.
-This indicates a growing interest in using AI to enhance online visibility and content strategies,
-and, indeed, several works have explored the application of ChatGPT to search engines, such as @shen_chatgpt_2024 and @cutler_chatgpt_2023.
-Topic 9 may also be about SEO, but appears less coherent.
+By contrast, Topic 2 addresses search engine optimisation~(SEO)
+and suggests that users are exploring how AI tools like ChatGPT can be leveraged in digital marketing.
+This aligns with the increasing interest in using AI to enhance online visibility and content strategies,
+as evidenced by related studies @shen_chatgpt_2024 @cutler_chatgpt_2023.
+Topic 9 also appears to be related to SEO but is less coherent in its representation.
 
-Topic 3 is clearly about education, as are topics 7 and 8,
+Topics 3, 7 and 8 clearly revolve around education,
 indicating that ChatGPT is actively discussed as a tool for learning and teaching.
-This suggests that AI is becoming increasingly influential in educational settings,
-potentially transforming how students access information, complete assignments and interact with educational content.
-However, integrating AI into education also raises questions about academic integrity;
-some of these issues are discussed in @cotton_chatting_2024.
+This suggests that a growing influence of AI in educational settings,
+potentially transforming how students access information, complete assignments, and interact with educational content.
+However, integrating AI into education also raises concerns about academic integrity,
+a topic discussed in @cotton_chatting_2024.
 
-The less common topics are broad,
-ranging from medicine, cybersecurity, mathematics, stocks
-to employment.
-This diversity indicates that ChatGPT's influence extends across various fields, with users exploring its potential applications in both specialized and general areas.
-These discussions reflect the growing recognition of AI's versatility
-and its potential impact on a wide range of professional and practical domains.
+The less prevalent topics span a range of fields,
+including medicine, cybersecurity, mathematics, stocks and employment.
+This diversity highlights the extensive influence of ChatGPT across various sectors
+and the growing recognition of AI’s versatility and its potential impact on both specialised and general domains.
 
 #figure(
   caption: [Word clouds for the 10 most frequent topics],
@@ -433,20 +421,20 @@ and its potential impact on a wide range of professional and practical domains.
 = Conclusion and Future Work
 
 The BERTopic model identified 74 topics from tweets about ChatGPT,
-revealing a high degree of overlap and hierarchical clustering.
-Prominent topics include artificial intelligence, SEO, and education,
-indicating significant interest in ChatGPT’s applications in digital marketing and educational contexts.
-This reflects the tool's significant impact in these areas.
-Overall, the topics are diverse and underscore the recognition of AI’s versatility and its expanding relevance.
+showing significant overlap and hierarchical clustering.
+Key topics include artificial intelligence, SEO and education,
+highlighting ChatGPT’s impact in digital marketing and educational contexts.
+Overall, the topics are diverse and underscore the recognition of
+the versatility and expanding relevance of AI.
 
 Future work could focus on refining the topic model to reduce redundancy and capture distinct themes more clearly
---- some of the topics (e.g., topics 3 and 7) were clearly the same.
+--- some topics (e.g., topics 3, 7 and 8) were nearly identical.
 Additionally, 
-the dataset only contained three days worth of tweets.
-There may be deeper insights into the public discourse regarding ChatGPT
-if topic modeling was performed on tweets over the span of a longer period
-to analyse how the perceptions change over time.
-It may also be worthwhile to collect data from multiple platforms
-and compare the discussion about ChatGPT with other AI tools.
+the dataset only contained three days' worth of tweets.
+Future research could benefit from analysing a longer time frame and
+the change in topics over time,
+in addition to
+comparing discussions across multiple platforms and AI tools
+to gain a deeper understanding of AI's impact and usage.
 
 #bibliography("references.bib")
