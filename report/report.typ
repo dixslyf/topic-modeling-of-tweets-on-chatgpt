@@ -219,291 +219,149 @@ Results are in @section-evaluation.
 
 The $C_v$ score for each set of hyperparameters is shown in @table-cv.
 $C_v$ scores range from 0, indicating low coherence, to 1, indicating high coherence.
-The scores in @table-cv are decent, with 0.592 as the lowest
- and 0.716 as the highest.
+The scores in @table-cv are acceptable, with 0.596 as the lowest
+ and 0.626 as the highest.
 
 The topics for the top three hyperparameter sets were then judged
-by manually inspecting the topic representations,
+by having a human manually inspect the topic representations,
 a snippet of which is shown in @table-topics.
-In this case, the set with the highest $C_v$ score appears to be most coherent.
-For example, it is difficult to gauge what the top topic for the second set represents, as is the case for the third set.
-Similar difficulties exist for other topics not shown in @table-topics (refer to the accompanying Jupyter notebook).
-Nonetheless, it is crucial to keep in mind that this evaluation is subjective.
+All three sets yield similar topics and coherence,
+and, interestingly, it is not obvious what the second topic for each set represents
+based on the representative words.
+There will likely not be a significant difference between each set,
+but, since we must still choose a set, further analysis will be conducted on the set with the highest $C_v$ score.
+Still, it is crucial to keep in mind that this evaluation is subjective.
 
 #figure(
   caption: [$C_V$ scores for hyperparameter sets],
   {
     set text(size: 11pt)
     table(
-      columns: (auto, auto, auto, auto, 15%),
+      columns: (auto, auto, auto, 15%),
       table.header(
         [No. of neighbours (UMAP)],
         [No. of components (UMAP)],
         [Minimum cluster size (HDBSCAN)],
-        [Target no. of topics (BERTopic)],
         [$C_v$],
       ),
 
-      [15],
-      [10],
-      [10],
-      [40],
-      [0.716],
-
       [30],
-      [5],
       [10],
       [30],
-      [0.697],
+      [#calc.round(0.6260656565788427, digits: 3)],
 
       [15],
       [10],
-      [10],
-      [50],
-      [0.693],
-
-      [15],
-      [10],
-      [10],
       [30],
-      [0.692],
-
-      [30],
-      [10],
-      [10],
-      [40],
-      [0.683],
+      [#calc.round(0.6251453237522169, digits: 3)],
 
       [30],
       [5],
-      [10],
-      [50],
-      [0.682],
-
       [30],
-      [5],
-      [10],
-      [40],
-      [0.680],
-
-      [30],
-      [10],
-      [20],
-      [50],
-      [0.679],
-
-      [30],
-      [10],
-      [10],
-      [30],
-      [0.677],
+      [#calc.round(0.6247880561567395, digits: 3)],
 
       [30],
       [5],
       [20],
-      [40],
-      [0.676],
+      [#calc.round(0.6218670777506773, digits: 3)],
+
+      [30],
+      [10],
+      [20],
+      [#calc.round(0.6178856581242598, digits: 3)],
 
       [15],
       [10],
-      [20],
-      [30],
-      [0.676],
+      [10],
+      [#calc.round(0.6138945314312856, digits: 3)],
 
       [15],
       [5],
-      [10],
-      [50],
-      [0.675],
-
-      [15],
-      [5],
-      [10],
       [30],
-      [0.673],
-
-      [30],
-      [10],
-      [10],
-      [50],
-      [0.673],
-
-      [30],
-      [5],
-      [20],
-      [50],
-      [0.670],
-
-      [15],
-      [5],
-      [10],
-      [40],
-      [0.662],
-
-      [30],
-      [10],
-      [20],
-      [30],
-      [0.657],
-
-      [15],
-      [10],
-      [20],
-      [50],
-      [0.656],
-
-      [30],
-      [5],
-      [20],
-      [30],
-      [0.652],
-
-      [15],
-      [10],
-      [20],
-      [40],
-      [0.646],
-
-      [15],
-      [5],
-      [20],
-      [40],
-      [0.646],
-
-      [15],
-      [5],
-      [20],
-      [50],
-      [0.644],
-
-      [30],
-      [10],
-      [20],
-      [40],
-      [0.640],
-
-      [15],
-      [5],
-      [20],
-      [30],
-      [0.635],
-
-      [30],
-      [10],
-      [20],
-      [None],
-      [0.617],
-
-      [30],
-      [5],
-      [20],
-      [None],
-      [0.615],
+      [#calc.round(0.6073894745143839, digits: 3)],
 
       [30],
       [5],
       [10],
-      [None],
-      [0.612],
-
-      [15],
-      [5],
-      [20],
-      [None],
-      [0.611],
+      [#calc.round(0.6059289829719166, digits: 3)],
 
       [15],
       [5],
       [10],
-      [None],
-      [0.609],
+      [#calc.round(0.6038504287879352, digits: 3)],
 
       [15],
       [10],
       [20],
-      [None],
-      [0.608],
+      [#calc.round(0.601119136530049, digits: 3)],
 
       [15],
-      [10],
-      [10],
-      [None],
-      [0.605],
+      [5],
+      [20],
+      [0.600],
+      // [#calc.round(0.6004166027278458, digits: 3)],
 
       [30],
       [10],
       [10],
-      [None],
-      [0.592],
+      [#calc.round(0.5957065404077899, digits: 3)],
     )
   }
 ) <table-cv>
 
 #figure(
-  caption: [Topic representations for the 5 most frequent topics of the top 3 hyperparameter sets],
+  caption: [Topic representations for the 4 most frequent topics of the BERTopic models for the top 3 hyperparameter sets],
   table(
     columns: 3,
     table.header[Hyperparameter Set\ $C_v$ Ranking][Topic Count][Representation],
 
     [1],
-    [6755],
-    [google, search, seo, page, tweet, code, prompt],
+    [1688],
+    [tools, generative, artificialintelligence, intelligence, artificial, robots, ai, future, humans, art],
 
     [],
-    [2349],
-    [malware, cybersecurity, chatbot, artificialintelligence],
+    [848],
+    [gpt3, essay, teacher, programming, telugu, referral, autobiography, instructgpt, freud, method],
 
     [],
-    [1898],
-    [openai, investment, maker, partnership, dollars],
+    [476],
+    [seo, search, engines, engine, searches, query, links, results, keywords, ads],
 
     [],
-    [1736],
-    [exam, mba, education, students, professor],
-
-    [],
-    [193],
-    [estate, legal, enterprise, lawyers, killer],
+    [473],
+    [students, education, classroom, schools, ban, cheating, teachers, kids, educators, teacher],
 
     [2],
-    [5998],
-    [search, tweet, free, month, plagiarism, twitter],
+    [1858],
+    [generative, tools, artificialintelligence, revolution, future, jobs, artists, ethics, intelligence, machinelearning],
 
     [],
-    [2038],
-    [ai, cybersecurity, experts, malware, tools],
+    [1121],
+    [gpt3, telugu, teacher, programming, raw, hell, essay, referral, crazy, autobiography],
 
     [],
-    [1473],
-    [openai, maker, dollar, investment, partnership],
+    [646],
+    [seo, search, engines, searches, keywords, web, threat, ads, results, query],
 
     [],
-    [1243],
-    [exam, mba, medical, professor, licensing, education],
-
-    [],
-    [135],
-    [nfts, chipmaker, hype, estimates, big, sales],
+    [571],
+    [students, teachers, cheating, education, ban, classroom, student, essay, teaching, class],
 
     [3],
-    [5854],
-    [tweet, capacity, woke, tweets, month, white],
+    [1660],
+    [generative, tools, artificialintelligence, robots, mind, ai, intelligence, future, jobs, humans],
 
     [],
-    [1768],
-    [investment, dollar, billions, openai, multibillion],
+    [807],
+    [gpt3, telugu, essay, programming, teacher, referral, instructgpt, freud, step, wallet],
 
     [],
-    [1625],
-    [exam, mba, professor, exams, medical, education],
+    [513],
+    [students, education, classroom, schools, ban, cheating, teacher, educators, teachers, student],
 
     [],
-    [1522],
-    [generative, robot, tools, artificialintelligence],
-
-    [],
-    [1243],
-    [google, search, founders, seo, engine, page],
+    [501],
+    [seo, search, engines, engine, searches, threat, ads, keywords, query, results],
 )
 ) <table-topics>
 
