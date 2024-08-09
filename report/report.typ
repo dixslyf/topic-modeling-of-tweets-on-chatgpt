@@ -27,6 +27,8 @@
   #it
 ]
 
+#show bibliography: set heading(numbering: "1.")
+
 #show outline: it => {
   set par(leading: 1em)
   it
