@@ -198,10 +198,11 @@ These steps were specified to the BERTopic model during initialisation.
 
 Several hyperparameters were tuned using a grid search:
 (a) number of neighbours for UMAP,
-(b) number of resulting components for UMAP,
-(c) minimum cluster size for HDBSCAN, and
-(d) target number of topics to reduce to for BERTopic.
-These hyperparameters have the most impact on the resulting topics
+(b) number of resulting components for UMAP, and
+(c) minimum cluster size for HDBSCAN.
+Since it is difficult to "guess" the number of topics,
+these hyperparameters were specifically chosen
+as they have the most impact on the resulting topics
 in terms of coherence and size.
 Each hyperparameter set was evaluated using
 a mixture of objective evaluation,
@@ -367,6 +368,85 @@ Still, it is crucial to keep in mind that this evaluation is subjective.
 
 = Results
 
-= Discussion and Future Work
+There is a total of 74 topics from the BERTopic model.
+The topics are visualised in a two-dimensional space using an intertopic distance map~(#text(hyphenate: false)[@fig-intertopic-dist]).
+Each bubble corresponds to a topic, and the radius represents the topic's prevalence.
+Similar topics will be closer to each other.
+At a glance, it is clear many topics overlap, indicating similarity.
+This can be explained by the use of HDBSCAN, which leads to hierarchical topics.
+Indeed, a topic similarity matrix (@fig-similarity-matrix) shows high similarity between many topics.
+Additionally, @fig-intertopic-dist shows there are roughly 10 main clusters of topics.
+Although out of scope for this report, in future, it may be worthwhile to explore the reduction of the number of topics to 10.
+
+#figure(
+  caption: [Intertopic distance map],
+  rect(image("graphics/intertopic-distance.png", width: 60%)),
+) <fig-intertopic-dist>
+
+#figure(
+  caption: [Topic similarity matrix],
+  image("graphics/similarity-matrix.png", width: 80%),
+) <fig-similarity-matrix>
+
+@fig-topic-word-scores shows the terms with the highest c-TF-IDF scores for the 10 most frequent topics.
+@fig-wordclouds conveys information similar to @fig-topic-word-scores by representing the
+terms as a word cloud, where larger words have higher c-TF-IDF scores.
+The topics are ordered by their prevalence (i.e., Topic 0 is the most common).
+
+Topic 0 appears to be about artificial intelligence~(AI).
+In a sense, the topic of AI is expected to be the most common since ChatGPT is an AI tool.
+Unfortunately, this is uninsightful.
+Topic 1 has rather disjointed terms — 
+the presence of "gpt3", "essay", and "teacher" suggest education, while "programming" adds a tech angle.
+The inclusion of the Telugu language could represent regional discussions or multilingual features.
+
+#figure(
+  caption: [Topic word scores for the 10 most frequent topics],
+  image("graphics/topic-word-scores.png"),
+) <fig-topic-word-scores>
+
+Topic 2, on the other hand, is seemingly about search engine optimisation~(SEO)
+and suggests that users are exploring how AI tools like ChatGPT can be leveraged in the digital marketing space.
+This indicates a growing interest in using AI to enhance online visibility and content strategies,
+and, indeed, several works have explored the application of ChatGPT to search engines, such as @shen_chatgpt_2024 and @cutler_chatgpt_2023.
+Topic 9 may also be about SEO, but appears less coherent.
+
+Topic 3 is clearly about education, as are topics 7 and 8,
+indicating that ChatGPT is actively discussed as a tool for learning and teaching.
+This suggests that AI is becoming increasingly influential in educational settings,
+potentially transforming how students access information, complete assignments and interact with educational content.
+However, integrating AI into education also raises questions about academic integrity;
+some of these issues are discussed in @cotton_chatting_2024.
+
+The less common topics are broad,
+ranging from medicine, cybersecurity, mathematics, stocks
+to employment.
+This diversity indicates that ChatGPT's influence extends across various fields, with users exploring its potential applications in both specialized and general areas.
+These discussions reflect the growing recognition of AI's versatility
+and its potential impact on a wide range of professional and practical domains.
+
+#figure(
+  caption: [Word clouds for the 10 most frequent topics],
+  image("graphics/wordclouds.png"),
+) <fig-wordclouds>
+
+= Conclusion and Future Work
+
+The BERTopic model identified 74 topics from tweets about ChatGPT,
+revealing a high degree of overlap and hierarchical clustering.
+Prominent topics include artificial intelligence, SEO, and education,
+indicating significant interest in ChatGPT’s applications in digital marketing and educational contexts.
+This reflects the tool's significant impact in these areas.
+Overall, the topics are diverse and underscore the recognition of AI’s versatility and its expanding relevance.
+
+Future work could focus on refining the topic model to reduce redundancy and capture distinct themes more clearly
+--- some of the topics (e.g., topics 3 and 7) were clearly the same.
+Additionally, 
+the dataset only contained three days worth of tweets.
+There may be deeper insights into the public discourse regarding ChatGPT
+if topic modeling was performed on tweets over the span of a longer period
+to analyse how the perceptions change over time.
+It may also be worthwhile to collect data from multiple platforms
+and compare the discussion about ChatGPT with other AI tools.
 
 #bibliography("references.bib")
