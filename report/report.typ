@@ -1,4 +1,3 @@
-#import "@preview/algo:0.3.3": algo, d, i
 #import "/constants.typ": *
 #import "/lib.typ": *
 
